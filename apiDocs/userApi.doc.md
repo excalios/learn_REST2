@@ -59,7 +59,7 @@
 ### Request headers.Authorization
 ```json
 {
-    "X-token" : "jwt"
+    "X-token" : "jwt token"
 }
 ```
 
@@ -84,7 +84,7 @@
 ### Request headers.Authorization
 ```json
 {
-    "X-token" : "jwt"
+    "X-token" : "jwt token"
 }
 ```
 ###  Request body
