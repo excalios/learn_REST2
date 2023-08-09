@@ -34,26 +34,31 @@ const login = async (req, res) => {
     return res.status(401).json({ message: "Required email and password" });
   }
   try {
-    const isExist = await prisma.user.findFirst({
+    const isExist = await prisma.user.findUnique({
       where: {
         email: email,
       },
     });
 
-    if (!isExist)
-      return res
-        .status(404)
-        .json({ message: "User have not been register yet" });
+    if (!isExist){
+      return res.status(404).json({ message: "User have not been register yet" })};
 
     if (!bcrypt.compareSync(password, isExist.password)) {
       return res.status(401).json({ message: "Invalid email and password" });
     }
 
-    const token = jwt.sign({ userId: isExist.id }, SECRET);
+    console.log(isExist)
+
+    const token = jwt.sign({ data: {
+      email:isExist.email,
+      name:isExist.name,
+      id:isExist.id  
+    }}, SECRET);
     return res.status(200).json({ token: token });
-  } catch (error) {
-    return res.status(500).json({ error: error });
+  } 
+  catch (err) {
+    return res.status(500).json({ error: err });
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login }
