@@ -46,7 +46,7 @@
 ```json
 {
     "message" : "Transfer successfully",
-    "data" : balance + amount
+    "data" : balance - amount
 }
 ```
 ### Response body on Fail
