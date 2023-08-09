@@ -14,21 +14,21 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-async function main() {
-    // ... you will write your Prisma Client queries here
-    const allUsers = await prisma.user.findMany()
-    console.log(allUsers)
-  }
+// async function main() {
+//     // ... you will write your Prisma Client queries here
+//     const allUsers = await prisma.user.findMany()
+//     console.log(allUsers)
+//   }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+// main()
+//   .then(async () => {
+//     await prisma.$disconnect();
+//   })
+//   .catch(async (e) => {
+//     console.error(e);
+//     await prisma.$disconnect();
+//     process.exit(1);
+//   });
 
 app.use('/user/auth', authRouter)
 
