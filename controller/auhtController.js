@@ -13,13 +13,24 @@ const register = async (req, res) => {
   }
   const hashed = await bcrypt.hash(password, 10);
   try {
-    await prisma.user.create({
+    // create user
+    const user = await prisma.user.create({
       data: {
         email: email,
         name: name,
         password: hashed,
       },
-    });
+    })
+
+    // create ewallet
+    await prisma.ewallet.create({
+      data:{
+        balance:0,
+        transfer:0,
+        withdraw:0,
+        userId:user.id
+      }
+    })
     return res.status(200).json({
       message: "Register succesfully",
     });
@@ -38,6 +49,14 @@ const login = async (req, res) => {
       where: {
         email: email,
       },
+      // select:{
+      //   id:true,
+      //   email:true,
+      //   name:true,
+      // },
+      include:{
+        ewallet:true
+      },
     });
 
     if (!isExist){
@@ -49,11 +68,7 @@ const login = async (req, res) => {
 
     console.log(isExist)
 
-    const token = jwt.sign({ data: {
-      email:isExist.email,
-      name:isExist.name,
-      id:isExist.id  
-    }}, SECRET);
+    const token = jwt.sign({ data:isExist}, SECRET);
     return res.status(200).json({ token: token });
   } 
   catch (err) {
