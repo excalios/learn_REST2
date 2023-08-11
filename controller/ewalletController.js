@@ -95,7 +95,7 @@ const withdraw = async (req, res) => {
         userId: id,
       },
       data: {
-        transfer: currentWithdraw + amount,
+        withdraw: currentWithdraw + amount,
         balance: currentBalance + amount,
       },
     });
