@@ -42,6 +42,9 @@ const transfer = async (req, res) => {
 
     const {transfer, balance} = user.ewallet
 
+    if(amount > balance)
+      return res.status(403).json({message: "your balance is not enough"})
+
     const updated = await prisma.ewallet.update({
       where: {
         userId: id,
