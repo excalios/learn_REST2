@@ -1,5 +1,7 @@
 require("dotenv").config();
+const utils = require('../utils')
 const { PrismaClient } = require("@prisma/client");
+
 
 const prisma = new PrismaClient();
 
@@ -30,31 +32,23 @@ const transfer = async (req, res) => {
     const { id } = req.user.data;
     const { amount } = req.body;
   
-    const user = await prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        ewallet: true,
-      },
-    });
+    const user = await utils.findUserByID(id)
 
     if (!user) {
       return res
         .status(404)
         .json({ message: "User have not been register yet" });
     }
-    
-    const currentTransfer = user.ewallet.transfer;
-    const currentBalance = user.ewallet.balance;
+
+    const {transfer, balance} = user.ewallet
 
     const updated = await prisma.ewallet.update({
       where: {
         userId: id,
       },
       data: {
-        transfer: currentTransfer + amount,
-        balance: currentBalance - amount,
+        transfer: transfer + amount,
+        balance: balance - amount,
       },
     });
 
@@ -72,14 +66,7 @@ const withdraw = async (req, res) => {
     const { id } = req.user.data;
     const { amount } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        ewallet: true,
-      },
-    });
+    const user = await utils.findUserByID(id)
 
     if (!user) {
       return res
@@ -87,16 +74,16 @@ const withdraw = async (req, res) => {
         .json({ message: "User have not been register yet" });
     }
 
-    const currentWithdraw = user.ewallet.withdraw;
-    const currentBalance = user.ewallet.balance;
+    const {withdraw, balance} = user.ewallet;
+
 
     const updated = await prisma.ewallet.update({
       where: {
         userId: id,
       },
       data: {
-        withdraw: currentWithdraw + amount,
-        balance: currentBalance + amount,
+        withdraw: withdraw + amount,
+        balance: balance + amount,
       },
     });
 

@@ -18,10 +18,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/user/auth', authRouter)
-app.use('/user/', userInfoRouter)
 
 // middleware for auth
 app.use(authenticated)
+app.use('/user/', userInfoRouter)
 app.use('/ewallet',ewalletRouter)
 
 
