@@ -1,18 +1,17 @@
 require("dotenv").config();
-const { PrismaClient } = require("@prisma/client");
+const prisma = require("../utils/prisma");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 
-const prisma = new PrismaClient();
-
 const register = async (req, res) => {
   const { email, password, name } = req.body;
-  if (!name || !password || !name) {
-    return res.status(401).json({ message: "Required name,password and name" });
+  // Schema Validation (Joi)
+  if (!email || !password || !name) {
+    return res.status(400).json({ message: "Required email, password and name" });
   }
-  const hashed = await bcrypt.hash(password, 10);
   try {
+    const hashed = await bcrypt.hash(password, 10);
     // create user
     const user = await prisma.user.create({
       data: {
@@ -33,6 +32,9 @@ const register = async (req, res) => {
     });
     return res.status(200).json({
       message: "Register succesfully",
+      data: {
+        email: user.email,
+      }
     });
   } catch (error) {
     return res.status(500).json({ error: error });
@@ -42,11 +44,9 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(401).json({ message: "Required email and password" });
+    return res.status(400).json({ message: "Required email and password" });
   }
   try {
-    console.log(email)
-    console.log(password)
     const isExist = await prisma.user.findUnique({
       where: {
         email: email,
@@ -54,7 +54,7 @@ const login = async (req, res) => {
       select: {
         id: true,
         email: true,
-        password:true,
+        password:true, // 'XXXXXXXXXXXX'
         name: true,
         ewallet: {
           select:{
@@ -78,11 +78,18 @@ const login = async (req, res) => {
     }
 
     if (!bcrypt.compareSync(password, isExist.password)) {
-      return res.status(401).json({ message: "Invalid email and password" });
+      return res.status(400).json({ message: "Invalid email and password" });
     }
 
-    const token = jwt.sign({ data: isExist }, SECRET);
-    return res.status(200).json({ token: token });
+    const { password, ...user } = isExist
+
+    const token = jwt.sign({ data: user }, SECRET);
+    return res.status(200).json({ 
+      data: {
+        name: user.name
+      },
+      token: token
+    });
   }
    catch (err) {
     return res.status(500).json({ error: err });

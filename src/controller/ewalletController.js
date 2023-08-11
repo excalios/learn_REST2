@@ -18,7 +18,7 @@ const getBalance = async (req, res) => {
     if (!balanceUser) {
       return res
         .status(404)
-        .json({ message: "User have not been register yet" });
+        .json({ message: "User have not been registered yet" });
     }
 
     return res.status(200).json({ data: balanceUser.balance });
@@ -43,7 +43,7 @@ const transfer = async (req, res) => {
     const {transfer, balance} = user.ewallet
 
     if(amount > balance)
-      return res.status(403).json({message: "your balance is not enough"})
+      return res.status(400).json({message: "your balance is not enough"})
 
     const updated = await prisma.ewallet.update({
       where: {

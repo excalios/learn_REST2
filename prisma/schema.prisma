@@ -11,18 +11,18 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
   password String
-  name  String?
-  ewallet Ewallet?
+  name     String?
+  ewallet  Ewallet?
 }
 
 model Ewallet {
-  id    Int     @id @default(autoincrement())
-  balance Int   @default(0)
-  transfer Int   @default(0)
-  withdraw Int   @default(0)
-  user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique // relation scalar field (used in the `@relation` attribute above)
+  id       Int  @id @default(autoincrement())
+  userId   Int  @unique // relation scalar field (used in the `@relation` attribute above)
+  user     User @relation(fields: [userId], references: [id])
+  balance  Int  @default(0)
+  transfer Int  @default(0)
+  withdraw Int  @default(0)
 }
