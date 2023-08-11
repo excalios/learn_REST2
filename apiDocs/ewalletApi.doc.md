@@ -7,7 +7,7 @@
 ### Request headers
 ```json
 {
-   "X-token" : "bearer token"
+   "token" : "bearer token"
 }
 ```
 
@@ -24,14 +24,14 @@
 }
 ```
 ## TRANSFER 
-- method : POST
+- method : PATCH
 - endpoints : /ewallet/transfer
 
 
 ### Request headers
 ```json
 {
-   "X-token" : "bearer token"
+   "token" : "bearer token"
 }
 ```
 
@@ -58,13 +58,13 @@
 ```
 
 ## WITHDRAW
-- method : POST
+- method : PATCH
 - endpoints : /ewallet/withdraw
 
 ### Request headers
 ```json
 {
-   "X-token" : "bearer token"
+   "token" : "bearer token"
 }
 ```
 ### Request body
@@ -78,51 +78,6 @@
 {
     "message" : "withdraw succesfully",
     "data" : balance + amount
-}
-```
-### Response body on Fail
-```json
-{
-    "error" : "Fail,user have not register yet"
-}
-```
-## TOTAL WITHDRAW
-- method : GET
-- endpoints : /ewallet/total/withdraw
-
-### Request headers
-```json
-{
-   "X-token" : "bearer token"
-}
-```
-### Response body on Success
-```json
-{
-    "data" : withdraw
-}
-```
-### Response body on Fail
-```json
-{
-    "error" : "Fail,user have not register yet"
-}
-```
-
-## TOTAL TRANSFER
-- method : GET
-- endpoints : /ewallet/total/transfer
-
-### Request headers
-```json
-{
-   "X-token" : "bearer token"
-}
-```
-### Response body on Success
-```json
-{
-    "data" : transfer
 }
 ```
 ### Response body on Fail

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const ewalletController = require('./../controller/ewallet')
+const ewalletController = require('../controller/ewalletController')
 const authMiddleware = require('./../middleware/authenticated')
 
 

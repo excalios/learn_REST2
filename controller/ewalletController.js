@@ -5,10 +5,21 @@ const prisma = new PrismaClient();
 
 const getBalance = async (req, res) => {
   try {
-    const payload = req.user.data;
-    const balance = payload.ewallet.balance;
-    console.log(payload);
-    return res.status(200).json({ data: `Rp${balance}` });
+    const { id } = req.user.data;
+
+    const balanceUser = await prisma.ewallet.findUnique({
+      where:{
+        userId:id
+      }
+    })
+
+    if (!balanceUser) {
+      return res
+        .status(404)
+        .json({ message: "User have not been register yet" });
+    }
+
+    return res.status(200).json({ data: balanceUser.balance });
   } catch (error) {
     return res.status(500).json({ error: error });
   }
