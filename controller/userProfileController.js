@@ -1,10 +1,11 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const utils = require('./../utils/index')
 const SECRET = process.env.SECRET;
 
 const infoUser = async (req, res) => {
   try {
-    const userData = req.user //from middleware
+    const { id } = req.user.data //from middleware
     // const token_ = req.headers.authorization;
     // if (!token_)
     //   return res.status(401).json({ message: "Authenticated required" });
@@ -13,10 +14,11 @@ const infoUser = async (req, res) => {
     // const token = token_.split(" ")[1];
     // const decoded = jwt.verify(token, SECRET);
     // const userData = decoded.data;
+    const user = await utils.findUserByID(id)
 
-    if (!userData) return res.status(403).json({ message: "Invalid token" });
+    if (!user) return res.status(403).json({ message: "You are forbidden user" });
 
-    return res.status(200).json({ message: `You are authenticated`, data: userData });
+    return res.status(200).json({ message: `You are authenticated`, data: user });
   } catch (error) {
     return res.status(500).json({ error: error });
   }
