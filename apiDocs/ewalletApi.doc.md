@@ -46,7 +46,13 @@
 ```json
 {
     "message" : "Transfer successfully",
-    "data" : balance - amount
+    "data": {
+        "id": X,
+        "balance": balance - amount,
+        "transfer": transfer + amount,
+        "withdraw": XXXX,
+        "userId": XX
+    }
 }
 ```
 ### Response body on Fail
@@ -77,7 +83,13 @@
 ```json
 {
     "message" : "withdraw succesfully",
-    "data" : balance + amount
+    "data": {
+        "id": X,
+        "balance": balance + amount,
+        "transfer": XXXX,
+        "withdraw": balance + amount,
+        "userId": XX
+    }
 }
 ```
 ### Response body on Fail
