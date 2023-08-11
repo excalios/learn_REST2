@@ -20,17 +20,17 @@ const register = async (req, res) => {
         name: name,
         password: hashed,
       },
-    })
+    });
 
     // create ewallet
     await prisma.ewallet.create({
-      data:{
-        balance:0,
-        transfer:0,
-        withdraw:0,
-        userId:user.id
-      }
-    })
+      data: {
+        balance: 0,
+        transfer: 0,
+        withdraw: 0,
+        userId: user.id,
+      },
+    });
     return res.status(200).json({
       message: "Register succesfully",
     });
@@ -49,31 +49,42 @@ const login = async (req, res) => {
       where: {
         email: email,
       },
-      // select:{
-      //   id:true,
-      //   email:true,
-      //   name:true,
-      // },
-      include:{
-        ewallet:true
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        ewallet: {
+          select:{
+            balance:true,
+            transfer:true,
+            withdraw:true
+          }
+        },
       },
+      // Kalau mau ambil kolom yang berelasi gunakan include
+      // !! include dan select tidak boleh se-level
+      // include:{
+      //   ewallet:true
+      // },
     });
 
-    if (!isExist){
-      return res.status(404).json({ message: "User have not been register yet" })};
+    if (!isExist) {
+      return res
+        .status(404)
+        .json({ message: "User have not been register yet" });
+    }
 
     if (!bcrypt.compareSync(password, isExist.password)) {
       return res.status(401).json({ message: "Invalid email and password" });
     }
 
-    console.log(isExist)
+    console.log(isExist);
 
-    const token = jwt.sign({ data:isExist}, SECRET);
+    const token = jwt.sign({ data: isExist }, SECRET);
     return res.status(200).json({ token: token });
-  } 
-  catch (err) {
+  } catch (err) {
     return res.status(500).json({ error: err });
   }
 };
 
-module.exports = { register, login }
+module.exports = { register, login };
