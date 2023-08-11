@@ -2,9 +2,9 @@ require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const SECRET = process.env.SECRET;
 
 const prisma = new PrismaClient();
-const SECRET = process.env.SECRET;
 
 const register = async (req, res) => {
   const { email, password, name } = req.body;
@@ -45,6 +45,8 @@ const login = async (req, res) => {
     return res.status(401).json({ message: "Required email and password" });
   }
   try {
+    console.log(email)
+    console.log(password)
     const isExist = await prisma.user.findUnique({
       where: {
         email: email,
@@ -52,6 +54,7 @@ const login = async (req, res) => {
       select: {
         id: true,
         email: true,
+        password:true,
         name: true,
         ewallet: {
           select:{
@@ -66,7 +69,7 @@ const login = async (req, res) => {
       // include:{
       //   ewallet:true
       // },
-    });
+    })
 
     if (!isExist) {
       return res
@@ -78,11 +81,10 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid email and password" });
     }
 
-    console.log(isExist);
-
     const token = jwt.sign({ data: isExist }, SECRET);
     return res.status(200).json({ token: token });
-  } catch (err) {
+  }
+   catch (err) {
     return res.status(500).json({ error: err });
   }
 };
